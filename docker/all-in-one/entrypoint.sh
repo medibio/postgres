@@ -59,8 +59,6 @@ function create_lsn_checkpoint_file {
 }
 
 function graceful_shutdown {
-  echo "Received signal $1. Shutting down."
-
   supervisorctl stop postgresql
 
   # Postgres ships the latest WAL file using archive_command during shutdown, in a blocking operation
@@ -262,13 +260,6 @@ fi
 touch "$CONFIGURED_FLAG_PATH"
 start_supervisor
 
-trap_with_arg() {
-    func="$1" ; shift
-    for sig ; do
-        trap "$func $sig" "$sig"
-    done
-}
-
 if [ "${PLATFORM_DEPLOYMENT:-}" ]; then
-  trap_with_arg graceful_shutdown INT TERM EXIT STOP QUIT USR1 USR2
+  trap graceful_shutdown INT 
 fi
