@@ -255,11 +255,8 @@ fi
 if [ "${PLATFORM_DEPLOYMENT:-}" ]; then
   enable_swap
   create_lsn_checkpoint_file
+  trap graceful_shutdown INT 
 fi
 
 touch "$CONFIGURED_FLAG_PATH"
 start_supervisor
-
-if [ "${PLATFORM_DEPLOYMENT:-}" ]; then
-  trap graceful_shutdown INT 
-fi
