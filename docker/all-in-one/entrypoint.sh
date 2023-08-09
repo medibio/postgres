@@ -59,6 +59,7 @@ function create_lsn_checkpoint_file {
 }
 
 function graceful_shutdown {
+  echo "$(date): Received SIGTERM. Shutting down."
   supervisorctl stop postgresql
 
   # Postgres ships the latest WAL file using archive_command during shutdown, in a blocking operation
@@ -255,8 +256,9 @@ fi
 if [ "${PLATFORM_DEPLOYMENT:-}" ]; then
   enable_swap
   create_lsn_checkpoint_file
-  trap graceful_shutdown INT 
+  trap graceful_shutdown TERM 
 fi
 
 touch "$CONFIGURED_FLAG_PATH"
 start_supervisor
+/usr/bin/admin-mgr lsn-checkpoint-push || echo "Failed to push LSN checkpoint"
