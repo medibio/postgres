@@ -256,9 +256,7 @@ fi
 if [ "${PLATFORM_DEPLOYMENT:-}" ]; then
   enable_swap
   create_lsn_checkpoint_file
-  trap graceful_shutdown TERM 
 fi
 
 touch "$CONFIGURED_FLAG_PATH"
 start_supervisor
-/usr/bin/admin-mgr lsn-checkpoint-push || echo "Failed to push LSN checkpoint"
