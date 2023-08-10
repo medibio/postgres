@@ -22,7 +22,8 @@ def main():
         data = sys.stdin.read(int(headers['len']))
         write_stderr(data)
 
-        subprocess.run(["/usr/bin/admin-mgr", "lsn-checkpoint-push"])
+        if headers['eventname'] == 'SUPERVISOR_STATE_CHANGE_STOPPING':
+            subprocess.run(["/usr/bin/admin-mgr", "lsn-checkpoint-push"])
 
         write_stdout('RESULT 2\nOK')
 
